@@ -1,6 +1,4 @@
-#include "WString.h"
-#include "HardwareSerial.h"
-#include "Arduino.h"
+
 #include "Stepper.hpp"
 
 
@@ -32,16 +30,10 @@ void Stepper::setMinDegre(int minDegree) {
 void Stepper::setMaxDegre(int maxDegree) {
   this->maxRange = maxDegree * (this->MAX_RANGE_STEPPER / 360);
 }
-
+void Stepper::setCapteur(Capteur* capteur) {
+  this->capteur = capteur;
+}
 void Stepper::reachTargetRange() {
-  static bool firsTime = true;
-
-  if (firsTime) {
-    myStepper->run();
-    myStepper->moveTo(getNewPosition());
-    firsTime = false;
-  }
-
   myStepper->run();
   myStepper->moveTo(getNewPosition());
 
@@ -50,14 +42,28 @@ void Stepper::reachTargetRange() {
   if (changeState) {
     this->stepperState = OFF;
     myStepper->disableOutputs();
-    firsTime = true;
   }
 }
+
 String Stepper::getPosition() {
   return String(map(myStepper->currentPosition(), this->getMinRange(), getMaxRange(), this->getMinDegre(), this->getMaxDegre()));
 }
-void Stepper::setNewPosition(int newTarget, int MIN_RANGE, int MAX_RANGE) {
-  this->targetPosition = map(newTarget, MIN_RANGE, MAX_RANGE, this->minRange, this->maxRange);
+void Stepper::setNewPosition() {
+  static int lastDistance = 0;
+   int minDistSensor = capteur->getMinDist();
+  int maxDistSensor = capteur->getMaxDist();
+
+if (lastDistance == capteur->getDistance()) return;
+  if (capteur->getDistance() >= minDistSensor && capteur->getDistance() <= maxDistSensor) {
+    this->targetPosition = map(capteur->getDistance(), minDistSensor, maxDistSensor, this->minRange, this->maxRange);
+  }
+  if (capteur->getDistance() <= minDistSensor) {
+    this->targetPosition = this->minRange;
+  }
+  if (capteur->getDistance() >= maxDistSensor) {
+    this->targetPosition =this->maxRange;
+  }
+  lastDistance = capteur->getDistance();
 }
 
 void Stepper::dontNeedToMove() {
@@ -82,6 +88,7 @@ void Stepper::dontNeedToMove() {
   }
 }
 void Stepper::update() {
+  setNewPosition();
   switch (this->stepperState) {
     case OFF:
       this->dontNeedToMove();

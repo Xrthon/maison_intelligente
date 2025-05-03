@@ -1,7 +1,10 @@
-#pragma once
+#include "Capteur.hpp"
 #include <avr/interrupt.h>
 #include "Arduino.h"
 #include <AccelStepper.h>
+#pragma once
+
+
 
 class Stepper {
 public:
@@ -19,8 +22,8 @@ public:
   void setup(int minDegre, int maxDegre);
   void setMaxDegre(int minDegree);
   void setMinDegre(int maxDegree);
-  void setNewPosition(int target, int MIN_RANGE, int MAX_RANGE);
-
+  void setNewPosition();
+  void setCapteur(Capteur* capteur);
   int getNewPosition() {
     return targetPosition;
   };
@@ -56,5 +59,6 @@ private:
 
 
   AccelStepper* myStepper;
+  Capteur* capteur;
   State stepperState = OFF;
 };

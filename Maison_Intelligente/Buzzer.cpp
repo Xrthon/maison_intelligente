@@ -6,9 +6,8 @@ Buzzer::Buzzer(int BUZZER_PIN) {
 }
 
 
-void Buzzer::setup(int toneFrequency) {
-  this->frequency = toneFrequency;
-  
+void Buzzer::setup() {
+  this->frequency = 100;
   pinMode(getPINBuzzer(), OUTPUT);
   Serial.println("Setup complet [ BUZZER ]");
 }

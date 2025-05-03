@@ -1,9 +1,8 @@
 #include "WString.h"
-#pragma once
-
-#include "Arduino.h"
 #include <HCSR04.h>
 #include <avr/interrupt.h>
+#pragma once
+
 
 
 
@@ -18,10 +17,14 @@ public:
   ~Capteur();
 
   void update();
-  void setup(int minDist, int maxDist);
+  void setup(int minDist, int maxDist, int alarmDist);
   void setMaxDist(int maxDist);
   void setMinDist(int minDist);
   void setRate(int rate);
+  int alarmStartDistance() {
+    return alarmDist;
+  }
+  void setAlarmStartDist(int distAlarmStart);
   int getPinEcho() {
     return PIN_ECHO;
   };
@@ -39,17 +42,18 @@ public:
     return distance;
   };
   String getDistanceStr() {
-    return String(distance);
+    return (String(distance) + " cm");
   };
-  State Capteur::getState() {
+  State getState() {
     return state;
   }
   String getSensorState();
 
 
+
 private:
   unsigned long _currentTime = 0;
-  int distance;
+  int distance, alarmDist;
   HCSR04* sensor;
   String sensorState;
   State state;

@@ -1,7 +1,10 @@
-#pragma once
+#include "Capteur.hpp"
+#include "Stepper.hpp"
 #include "Arduino.h"
 #include "String.h"
 #include <LCD_I2C.h>
+#pragma once
+
 
 
 class Screen {
@@ -9,8 +12,9 @@ public:
   Screen();
   ~Screen();
 
-  void setup();
+  void setup(Stepper* stepper, Capteur* capteur);
   void update();
+  
   void setStartText1(const String Start);
   void setStartText2(const String Start);
   void setSecLine(String texteLine2);
@@ -28,7 +32,8 @@ private:
   uint8_t column = 16, row = 2;
   int rate = 100;
   LCD_I2C* lcd;
-
+  Stepper* stepper;
+  Capteur* capteur;
 
   bool needUpdate = false;
   String starText1, starText2, currentText1, currentText2;

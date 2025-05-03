@@ -1,5 +1,6 @@
-#pragma once
 #include "Arduino.h"
+
+#pragma once
 class Buzzer {
 public:
   enum State {
@@ -8,7 +9,7 @@ public:
   };
 
   Buzzer(int BUZZER_PIN);
-  void setup(int toneFrequency);
+  void setup();
   void update();
   void onState();
   void offState();

@@ -1,5 +1,4 @@
-#include "Arduino.h"
-#include "HardwareSerial.h"
+
 #include "Screen.hpp"
 
 Screen::Screen() {
@@ -9,7 +8,9 @@ Screen::Screen() {
 Screen::~Screen() {
   delete lcd;
 }
-void Screen::setup() {
+void Screen::setup(Stepper* stepper, Capteur* capteur) {
+  this->stepper = stepper;
+  this->capteur = capteur;
   lcd->begin();
   lcd->backlight();
   lcd->setCursor(0, 0);
@@ -57,6 +58,9 @@ void Screen::printFirstLine() {
   lcd->setCursor(espace, 0);
   lcd->print(this->currentText1);
 }
+
+
+
 void Screen::update() {
   static bool firsTime = true;
   static String lastTextPrint1 = this->currentText1;
@@ -66,15 +70,24 @@ void Screen::update() {
 
   if (firsTime) {
     lcd->clear();
-    this->_previousTime = this->_currentTime;
-    printFirstLine();
-    printSecLine();
+    this->setStartText1("Dist :");
+    this->setStartText2("Deg :");
+    this->setFirstLine(lastTextPrint1);
+    this->setSecLine(lastTextPrint2);
+    this->printFirstLine();
+    this->printSecLine();
     firsTime = false;
   }
 
   if (this->_currentTime - this->_previousTime < rate) return;
 
+  this->currentText1 = capteur->getDistanceStr();
 
-  if (lastTextPrint1 != this->currentText1 || lastTextPrint2 != this->currentText2)
+  this->currentText2 = (capteur->getSensorState() == "deg") ? (stepper->getPosition() + capteur->getSensorState()) : capteur->getSensorState();
+
+  if (lastTextPrint1 != this->currentText1 || lastTextPrint2 != this->currentText2) {
+    lastTextPrint1 = this->currentText1;
+    lastTextPrint2 = this->currentText2;
     firsTime = true;
+  }
 }

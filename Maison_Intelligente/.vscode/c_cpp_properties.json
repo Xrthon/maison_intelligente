@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Arduino",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/Users/salomonbeaulieu/Documents/Arduino/**",
+        "/Users/salomonbeaulieu/Documents/Arduino/Libraries/**"
+      ],
+      "defines": ["ARDUINO=10813"],
+      "compilerPath": "",
+      "cStandard": "c11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}

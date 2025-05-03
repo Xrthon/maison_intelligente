@@ -6,12 +6,10 @@ public:
     ON
   };
   Light(int PIN);
-  void setup(bool state);
+  void setup();
 
   void blinkState();
-  void duoLightBlinkState(Light seclight);
   void fadeState(int fadeRate);
-  void multiLightBlinkState(Light light);
 
   void setBlinkRate(int rate);
   void setLightState(bool State);

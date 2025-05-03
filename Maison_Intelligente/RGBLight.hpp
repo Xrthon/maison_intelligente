@@ -1,5 +1,6 @@
-#pragma once
 #include "Light.hpp"
+
+#pragma once
 class RGBLight : public Light {
 public:
   enum RGBState {
