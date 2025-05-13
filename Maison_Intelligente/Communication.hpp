@@ -1,4 +1,5 @@
 #include "Capteur.hpp"
+#include "TypeDefs.h"
 #pragma once
 
 class CommunicationSerie {

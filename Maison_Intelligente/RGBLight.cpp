@@ -9,6 +9,34 @@ RGBLight::RGBLight(int redPin, int greenPin, int bluePin)
   PIN_GREEN = greenPin;
   PIN_BLUE = bluePin;
 }
+void RGBLight::SetRGBLedColour(const char* hexColor) {
+  // Vérifie que la chaîne commence par '#' et contient 7 caractères (#RRGGBB)
+  if (hexColor[0] == '#' && strlen(hexColor) == 7) {
+    // Ignore le caractère '#' en prenant à partir de l'index 1
+    long number = strtol(hexColor + 1, NULL, 16);  // Convertit les 6 caractères hex (RRGGBB)
+
+    redValue = (number >> 16) & 0xFF;
+    greenValue = (number >> 8) & 0xFF;
+    blueValue = number & 0xFF;
+
+    state =ON;
+    // Applique les couleurs aux broches
+    analogWrite(PIN_RED, redValue);
+    analogWrite(PIN_GREEN, greenValue);
+    analogWrite(PIN_BLUE, blueValue);
+
+    Serial.print("Composantes RGB : ");
+    Serial.print(redValue);
+    Serial.print(", ");
+    Serial.print(greenValue);
+    Serial.print(", ");
+    Serial.println(blueValue);
+  } else {
+    Serial.print("Erreur: chaîne de couleur invalide -> ");
+    Serial.println(hexColor);
+  }
+}
+
 void RGBLight::setup() {
   pinMode(PIN_RED, OUTPUT);
   pinMode(PIN_GREEN, OUTPUT);
@@ -68,8 +96,13 @@ void RGBLight::blinkState() {
     firsTime = true;
   }
 }
-void RGBLight::fade(int rate){
-
+void RGBLight::fade(int rate) {
+}
+void RGBLight::onState() {
+  state = ON;
+  analogWrite(PIN_RED, redValue);
+  analogWrite(PIN_GREEN, greenValue);
+  analogWrite(PIN_BLUE, blueValue);
 }
 void RGBLight::update() {
   switch (state) {
@@ -78,8 +111,6 @@ void RGBLight::update() {
       break;
     case BLINK:
       blinkState();
-      break;
-    case FADE:
       break;
     case ON:
       break;

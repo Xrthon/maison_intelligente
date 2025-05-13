@@ -7,16 +7,18 @@
 class Alarme {
 
 public:
-  Alarme(int BUZZER_PIN, int LIGHT_PIN1, int LIGHT_PIN2, int LIGHT_PIN3);
+  Alarme(int BUZZER_PIN, RGBLight* ledRGB);
   void setup(int delayTurnOffAlarm);
   void update();
   void startAlarm();
   void offAlarm();
   void setSensor(Capteur* capteur);
   bool distanceLowerThanMin();
+
 private:
   Buzzer* buzzer;
   RGBLight* rgdLight;
   Capteur* capteur;
   int delayTurnOffAlarm=0;
+  bool alarmOff=false;
 };

@@ -9,7 +9,7 @@ public:
   void setup();
 
   void blinkState();
-  void fadeState(int fadeRate);
+  void fadeState();
 
   void setBlinkRate(int rate);
   void setLightState(bool State);

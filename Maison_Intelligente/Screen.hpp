@@ -1,3 +1,6 @@
+#include "HardwareSerial.h"
+#include "WString.h"
+#include <avr/interrupt.h>
 #include "Capteur.hpp"
 #include "Stepper.hpp"
 #include "Arduino.h"
@@ -14,7 +17,7 @@ public:
 
   void setup(Stepper* stepper, Capteur* capteur);
   void update();
-  
+
   void setStartText1(const String Start);
   void setStartText2(const String Start);
   void setSecLine(String texteLine2);
@@ -25,7 +28,12 @@ public:
   String getDA() {
     return String(daNumber);
   };
-
+  String getLine1() {
+    return starText1+currentText1;
+  };
+  String getLine2() {
+    return starText2 + currentText2;
+  };
 
 private:
   unsigned long _currentTime = millis(), _previousTime = 0, daNumber = 1993855;
@@ -36,6 +44,7 @@ private:
   Capteur* capteur;
 
   bool needUpdate = false;
+  String *ptr_text1= nullptr;
   String starText1, starText2, currentText1, currentText2;
   uint8_t lastNumber_55[8] = {
     0b11100,

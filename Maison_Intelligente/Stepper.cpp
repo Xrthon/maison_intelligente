@@ -45,15 +45,18 @@ void Stepper::reachTargetRange() {
   }
 }
 
-String Stepper::getPosition() {
+String Stepper::getPositionStr() {
   return String(map(myStepper->currentPosition(), this->getMinRange(), getMaxRange(), this->getMinDegre(), this->getMaxDegre()));
+}
+int Stepper::getPosition() {
+  return map(myStepper->currentPosition(), this->getMinRange(), getMaxRange(), this->getMinDegre(), this->getMaxDegre());
 }
 void Stepper::setNewPosition() {
   static int lastDistance = 0;
-   int minDistSensor = capteur->getMinDist();
+  int minDistSensor = capteur->getMinDist();
   int maxDistSensor = capteur->getMaxDist();
 
-if (lastDistance == capteur->getDistance()) return;
+  if (lastDistance == capteur->getDistance()) return;
   if (capteur->getDistance() >= minDistSensor && capteur->getDistance() <= maxDistSensor) {
     this->targetPosition = map(capteur->getDistance(), minDistSensor, maxDistSensor, this->minRange, this->maxRange);
   }
@@ -61,7 +64,7 @@ if (lastDistance == capteur->getDistance()) return;
     this->targetPosition = this->minRange;
   }
   if (capteur->getDistance() >= maxDistSensor) {
-    this->targetPosition =this->maxRange;
+    this->targetPosition = this->maxRange;
   }
   lastDistance = capteur->getDistance();
 }
@@ -87,14 +90,24 @@ void Stepper::dontNeedToMove() {
     firsTime = true;
   }
 }
+void Stepper::offState() {
+  disableByweb = true;
+  myStepper->disableOutputs();
+}
+void Stepper::onState() {
+  disableByweb = false;
+  myStepper->run();
+}
 void Stepper::update() {
-  setNewPosition();
-  switch (this->stepperState) {
-    case OFF:
-      this->dontNeedToMove();
-      break;
-    case ON:
-      this->reachTargetRange();
-      break;
+  if (!disableByweb) {
+    setNewPosition();
+    switch (this->stepperState) {
+      case OFF:
+        this->dontNeedToMove();
+        break;
+      case ON:
+        this->reachTargetRange();
+        break;
+    }
   }
 }

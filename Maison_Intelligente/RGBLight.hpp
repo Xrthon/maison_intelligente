@@ -15,9 +15,11 @@ public:
     ON
   };
   RGBLight(int redPin, int greenPin, int bluePin);
+  void SetRGBLedColour(const char* hexColor);
   void update();
   void setup();
   void offState();
+  void onState();
   void blinkState();
   void fade(int rate);
   void setRGBState(int r, int g, int b);

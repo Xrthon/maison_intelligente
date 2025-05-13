@@ -1,3 +1,4 @@
+#pragma once
 // Mettre class/Struct utile pour tous
 enum class Stat {
   GOODCMD,

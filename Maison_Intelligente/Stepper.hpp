@@ -24,6 +24,7 @@ public:
   void setMinDegre(int maxDegree);
   void setNewPosition();
   void setCapteur(Capteur* capteur);
+  int getPosition();
   int getNewPosition() {
     return targetPosition;
   };
@@ -40,8 +41,9 @@ public:
   int getMinRange() {
     return minRange;
   };
-  String getPosition();
-
+  String getPositionStr();
+  void offState();
+  void onState();
 
 private:
   unsigned long _previousTime = 0,
@@ -57,7 +59,7 @@ private:
       maxRange,
       targetPosition;
 
-
+  bool disableByweb = true;
   AccelStepper* myStepper;
   Capteur* capteur;
   State stepperState = OFF;

@@ -3,9 +3,9 @@
 #include "Light.hpp"
 #include "Alarm.hpp"
 
-Alarme::Alarme(int BUZZER_PIN, int LIGHT_PIN1, int LIGHT_PIN2, int LIGHT_PIN3) {
+Alarme::Alarme(int BUZZER_PIN, RGBLight* ledRGB) {
   buzzer = new Buzzer(BUZZER_PIN);
-  rgdLight = new RGBLight(LIGHT_PIN1, LIGHT_PIN2, LIGHT_PIN3);
+  rgdLight = ledRGB;
 }
 void Alarme::setup(int delayTurnOffAlarm) {
   this->delayTurnOffAlarm = delayTurnOffAlarm;
@@ -18,14 +18,16 @@ void Alarme::update() {
   if (this->distanceLowerThanMin()) {
     previousTimer = currenTime;
     this->startAlarm();
+    alarmOff = false;
   }
 
   buzzer->update();
   rgdLight->update();
-
-  if (currenTime - previousTimer < delayTurnOffAlarm) return;
-  previousTimer = currenTime;
-  this->offAlarm();
+  if (!alarmOff) {
+    if (currenTime - previousTimer < delayTurnOffAlarm) return;
+    previousTimer = currenTime;
+    this->offAlarm();
+  }
 }
 
 void Alarme::setSensor(Capteur* capteur) {
@@ -38,6 +40,7 @@ bool Alarme::distanceLowerThanMin() {
 void Alarme::offAlarm() {
   buzzer->offState();
   rgdLight->offState();
+  alarmOff = true;
 }
 void Alarme::startAlarm() {
   buzzer->onState();
